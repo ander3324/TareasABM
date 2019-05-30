@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Tarea;
@@ -31,13 +32,20 @@ public class FrmABMTareasController implements Initializable {
     private Button btnSave;
     @FXML
     private Button btnCancel;
+    @FXML
+    private DatePicker dtpFecha;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        //Cargar objeto enviado al repositorio...
+        Tarea t = new Tarea();
+        if (TareasABM.repo.getTarea() != null) {
+            t = TareasABM.repo.getTarea();
+            txtDescripcion.setText(t.getDescripcion());
+        }
     }
 
     @FXML
@@ -47,20 +55,32 @@ public class FrmABMTareasController implements Initializable {
                     = new Alert(Alert.AlertType.ERROR, "La Descripción no puede estar vacía...");
             alert.showAndWait();
         } else {
-            
-            //Crear tarea y guardar en repositorio...
-            Tarea t = new Tarea();
-            t.setDescripcion(txtDescripcion.getText());
-            t.setNro(TareasABM.repo.getTareas().size() + 1);
-            TareasABM.repo.addTarea(t);
-            
+
+            Stage st = (Stage) btnSave.getScene().getWindow();
+
+            if (st.getTitle().startsWith("Nueva")) {
+                //Crear tarea y guardar en repositorio...
+                Tarea t = new Tarea();
+                t.setDescripcion(txtDescripcion.getText());
+                t.setNro(TareasABM.repo.getTareas().size() + 1);
+                TareasABM.repo.addTarea(t);
+            } else {
+                //Modificar tarea ya existente en la lista del repo...
+                for(int i = 0; i < TareasABM.repo.getTareas().size(); i++) {
+                    if(TareasABM.repo.getTareas().get(i).getNro() 
+                            == TareasABM.repo.getTarea().getNro()) {
+                        TareasABM.repo.getTarea().setDescripcion(txtDescripcion.getText());
+                    }
+                }
+            }
+
             Alert alert
                     = new Alert(Alert.AlertType.INFORMATION, "Tarea Guardada Correctamente...");
             alert.showAndWait();
             cerrarVentana();
         }
     }
-    
+
     @FXML
     private void cancelar_OnAction(ActionEvent event) {
         Alert alert

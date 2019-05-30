@@ -8,8 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="TareasABM.jar" size="10537" download="eager" />
-    <jar href="lib/MisClases.jar" size="4115" download="eager" />
+    <jar href="TareasABM.jar" size="11702" download="eager" />
+    <jar href="lib/MisClases.jar" size="4114" download="eager" />
   </resources>
 <security>
   <all-permissions/>

@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import model.Tarea;
 import tareasabm.TareasABM;
 import util.VentanasUtil;
@@ -26,14 +27,15 @@ import util.VentanasUtil;
 public class frmTareasController implements Initializable {
 
     private Label label;
-    @FXML
-    private ListView<Tarea> lstTareas;
+    
     @FXML
     private Button btnAdd;
     @FXML
     private Button btnEdit;
     @FXML
     private Button btnDel;
+    @FXML
+    private TableView<Tarea> tbvTareas;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -41,28 +43,39 @@ public class frmTareasController implements Initializable {
     }
 
     private void cargarDatos() {
-        lstTareas.getItems().clear();
-        lstTareas.getItems().addAll(TareasABM.repo.getTareas());
+        tbvTareas.getItems().clear();
+        tbvTareas.getItems().addAll(TareasABM.repo.getTareas());
     }
 
     @FXML
     private void nuevo_OnAction(ActionEvent event) {
+        TareasABM.repo.setTarea(new Tarea());
         VentanasUtil.abrirDialogo(btnDel.getScene().getWindow(), "/view/frmABMTareas.fxml", "Nueva Tarea");
         cargarDatos();
     }
 
     @FXML
     private void modificar_OnAction(ActionEvent event) {
+        if (!tbvTareas.getSelectionModel().getSelectedItem().equals(null)) {
+            TareasABM.repo.setTarea(tbvTareas.getSelectionModel().getSelectedItem());
+            VentanasUtil.abrirDialogo(btnDel.getScene().getWindow(), "/view/frmABMTareas.fxml", "Modificar Tarea");
+            cargarDatos();
+        } else {
+            Alert alert
+                    = new Alert(Alert.AlertType.WARNING, "No hay tarea seleccionada...");
+            alert.showAndWait();
+        }
+
     }
 
     @FXML
     private void borrar_OnAction(ActionEvent event) {
-         Alert alert
+        Alert alert
                 = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de borrar la tarea?");
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                TareasABM.repo.removeTarea(lstTareas.getSelectionModel().getSelectedItem());
+                TareasABM.repo.removeTarea(tbvTareas.getSelectionModel().getSelectedItem());
                 cargarDatos();
             }
         });

@@ -6,6 +6,9 @@
 
 package model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author ander
@@ -13,6 +16,8 @@ package model;
 public class Tarea {
     private int nro;
     private String descripcion;
+    private Date fecha;
+    private boolean finalizada;
 
     public int getNro() {
         return nro;
@@ -32,6 +37,23 @@ public class Tarea {
     
     @Override
     public String toString() {
-        return nro + ") " + descripcion;
+        return nro + ") " + descripcion + " - " + 
+                new SimpleDateFormat("dd/MM/yyyy").format(fecha) + " - " + finalizada;
+    }
+
+    public String getFecha() {
+        return new SimpleDateFormat("dd/MM/yyyy").format(fecha).toString();
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String isFinalizada() {
+        return finalizada ? "Sí" : "No";
+    }
+
+    public void setFinalizada(boolean finalizada) {
+        this.finalizada = finalizada;
     }
 }
