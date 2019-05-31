@@ -6,6 +6,8 @@
 package controller;
 
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,7 +46,15 @@ public class FrmABMTareasController implements Initializable {
         Tarea t = new Tarea();
         if (TareasABM.repo.getTarea() != null) {
             t = TareasABM.repo.getTarea();
+            int dd, mm, aaaa;
             txtDescripcion.setText(t.getDescripcion());
+            
+            //Preparar la fecha: dd/mm/aaaa
+            dd = Integer.parseInt(tareasabm.TareasABM.repo.getTarea().getFecha().substring(0, 2));
+            mm = Integer.parseInt(tareasabm.TareasABM.repo.getTarea().getFecha().substring(3, 5));
+            aaaa = Integer.parseInt(tareasabm.TareasABM.repo.getTarea().getFecha().substring(6, 10));
+
+            dtpFecha.setValue(LocalDate.of(aaaa, mm, dd));
         }
     }
 
@@ -63,13 +73,15 @@ public class FrmABMTareasController implements Initializable {
                 Tarea t = new Tarea();
                 t.setDescripcion(txtDescripcion.getText());
                 t.setNro(TareasABM.repo.getTareas().size() + 1);
+                t.setFecha(Date.valueOf(dtpFecha.getValue()));
                 TareasABM.repo.addTarea(t);
             } else {
                 //Modificar tarea ya existente en la lista del repo...
                 for(int i = 0; i < TareasABM.repo.getTareas().size(); i++) {
                     if(TareasABM.repo.getTareas().get(i).getNro() 
                             == TareasABM.repo.getTarea().getNro()) {
-                        TareasABM.repo.getTarea().setDescripcion(txtDescripcion.getText());
+                        TareasABM.repo.getTareas().get(i).setDescripcion(txtDescripcion.getText());
+                        TareasABM.repo.getTareas().get(i).setFecha(Date.valueOf(dtpFecha.getValue()));
                     }
                 }
             }
